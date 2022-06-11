@@ -1,34 +1,7 @@
 <?php
 
 class Musteriler{
-    private $musteri_adi;
-    private $dogum_tarihi;
-    private $telefon;
-    private $mail_adresi;
-    private $tc_kimlik;
-    private $musteri_tipi_id;
-
-    /**
-     * Undocumented function
-     *
-     * @param [Object] $database
-     * @param [String] $musteri_adi
-     * @param [Date] $dogum_tarihi
-     * @param [String] $telefon
-     * @param [String] $mail_adresi
-     * @param [String] $tc_kimlik
-     * @param [Integer] $musteri_tipi_id
-     */ 
-     
-    public function __construct($musteri_adi, $dogum_tarihi, $telefon, $mail_adresi, $tc_kimlik,$musteri_tipi_id){
-        $this->musteri_adi = $musteri_adi;
-        $this->dogum_tarihi = $dogum_tarihi;
-        $this->telefon = $telefon;
-        $this->mail_adresi = $mail_adresi;
-        $this->tc_kimlik = $tc_kimlik;
-        $this->musteri_tipi_id = $musteri_tipi_id;
-    }
-
+    
     public function setDatabase($database){
         $this->database = $database;
     }
@@ -37,56 +10,59 @@ class Musteriler{
         
         try{
             $sql = "SELECT * FROM musteriler WHERE id = $id";
-            $result = $this->database->query($sql);
-            $musteri = $result->fetch_object();
-            return $musteri;
+            $result = $this->database->prepare($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
             return "false";
         }
     }
-
-    public function getMusteriler(){
+    // returns all records
+    public function getMusteriler($database){
         try{
-            $sql = "SELECT * FROM musteriler";
-            $result = $this->database->query($sql);
-            $musteriler = $result->fetch_all(MYSQLI_ASSOC);
-            return $musteriler;
+            $sql = "SELECT * FROM musteriler ORDER BY musteri_adi ASC";
+            $result = $database->prepare($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
-            return "error";
+            return false;
 
         }
         
     }
 
-    public function insertMusteri(){
+    public function insertMusteri($database,$musteri_adi, $dogum_tarihi, $telefon, $mail_adresi, $tc_kimlik,$musteri_tipi_id){
         try{
-            $query  =  $this->database->prepare("INSERT INTO musteriler (musteri_adi, dogum_tarihi, telefon, mail_adresi, tc_kimlik, musteri_tipi_id) VALUES (?, ?, ?, ?, ?, ?)");
-            $query->execute(array($this->musteri_adi, $this->dogum_tarihi, $this->telefon, $this->mail_adresi, $this->tc_kimlik, $this->musteri_tipi_id));
+            $query  =  $database->prepare("INSERT INTO musteriler (musteri_adi, dogum_tarihi, telefon, mail_adresi, tc_kimlik, musteri_tipi_id) VALUES (?, ?, ?, ?, ?, ?)");
+            $query->execute(array($musteri_adi, $dogum_tarihi, $telefon, $mail_adresi, $tc_kimlik, $musteri_tipi_id));
+            return true;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }        
     }
 
-    public function updateMusteri($id){
+    public function updateMusteri($database,$id,$musteri_adi, $dogum_tarihi, $telefon, $mail_adresi, $tc_kimlik,$musteri_tipi_id){
         try{
-            $query  =  $this->database->prepare("UPDATE musteriler SET musteri_adi = ?, dogum_tarihi = ?, telefon = ?, mail_adresi = ?, tc_kimlik = ?, musteri_tipi_id = ? WHERE id = ?");
-            $query->execute(array($this->musteri_adi, $this->dogum_tarihi, $this->telefon, $this->mail_adresi, $this->tc_kimlik, $this->musteri_tipi_id, $id));
+            $query  =  $database->prepare("UPDATE musteriler SET musteri_adi = ?, dogum_tarihi = ?, telefon = ?, mail_adresi = ?, tc_kimlik = ?, musteri_tipi_id = ? WHERE id = ?");
+            $query->execute(array($musteri_adi, $dogum_tarihi, $telefon, $mail_adresi, $tc_kimlik, $musteri_tipi_id, $id));
+            return $query;
         }
        catch(PDOException $e){
-           return "error";
+           return false;
 
         }
     }
-    public function deleteMusteri($id){
+    public function deleteMusteri($database,$id){
         try{
-            $query  =  $this->database->prepare("DELETE FROM musteriler WHERE id = ?");
+            $query  =  $database->prepare("DELETE FROM musteriler WHERE id = ?");
             $query->execute(array($id));
+            return $query;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
     

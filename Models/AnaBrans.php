@@ -1,69 +1,62 @@
 <?php
 
 class AnaBrans{
-
-    private $bransId;
-
-    public function __construct($bransId){
-        $this->bransId = $bransId;
-    }
-    public function setDatabase($database){
-        $this->database = $database;
-    }
-    public function getAnaBrans(){
+    
+    public function getAnaBrans($database){
         try{
-            $sql = "SELECT * FROM ana_branslar";
-            $result = $this->database->query($sql);
-            $anaBranslar = $result->fetch_all(MYSQLI_ASSOC);
-            return $anaBranslar;
+            $sql = "SELECT * FROM ana_brans";
+            $result = $database->query($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
+   
 
-    public function getAnaBransById($id){
+    public function getAnaBransById($database,$id){
         try{
-            $sql = "SELECT * FROM ana_branslar WHERE id = $id";
-            $result = $this->database->query($sql);
-            $anaBrans = $result->fetch_object();
-            return $anaBrans;
+            $sql = "SELECT * FROM ana_brans WHERE id = $id";
+            $result = $database->query($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
 
-    public function insertAnaBrans(){
+    public function insertAnaBrans($database,$brans_adi){
         try{
-            $sql = "INSERT INTO ana_branslar (brans_id) VALUES ('$this->bransId')";
-            $result = $this->database->query($sql);
+            $sql = "INSERT INTO ana_brans (brans_adi) VALUES ('$brans_adi')";
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
 
-    public function updateAnaBrans($id, $bransId){
+    public function updateAnaBrans($database,$id,$brans_adi){
         try{
-            $sql = "UPDATE ana_branslar SET brans_id = '$bransId' WHERE id = $id";
-            $result = $this->database->query($sql);
+            $sql = "UPDATE ana_brans SET brans_adi = '$brans_adi' WHERE id = $id";
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
 
-    public function deleteAnaBrans($id){
+    public function deleteAnaBrans($database,$id){
         try{
-            $sql = "DELETE FROM ana_branslar WHERE id = $id";
-            $result = $this->database->query($sql);
+            $sql = "DELETE FROM ana_brans WHERE id = $id";
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
 

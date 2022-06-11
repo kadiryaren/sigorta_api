@@ -1,65 +1,58 @@
 <?php
 
 class SigortaSirketleri{
-    private $sirket_adi;
 
-    public function __construct($sirket_adi){
-        $this->sirket_adi = $sirket_adi;
-    }
-    public function setDatabase($database){
-        $this->database = $database;
-    }
-    public function getSigortaSirketleri(){
+    public function getSigortaSirketleri($database){
         try{
             $sql = "SELECT * FROM sigorta_sirketleri";
-            $result = $this->database->query($sql);
-            $sigortaSirketleri = $result->fetch_all(MYSQLI_ASSOC);
-            return $sigortaSirketleri;
+            $result = $database->query($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
-    public function getSigortaSirketleriById($id){
+    public function getSigortaSirketleriById($database,$id){
         try{
             $sql = "SELECT * FROM sigorta_sirketleri WHERE id = $id";
-            $result = $this->database->query($sql);
-            $sigortaSirketleri = $result->fetch_object();
-            return $sigortaSirketleri;
+            $result = $database->query($sql);
+            $result->execute();
+            return $result->fetchAll();
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
-    public function insertSigortaSirketleri(){
+    public function insertSigortaSirketleri($database,$sirket_adi){
         try{
-            $sql = "INSERT INTO sigorta_sirketleri (sirket_adi) VALUES ('$this->sirket_adi')";
-            $result = $this->database->query($sql);
+            $sql = "INSERT INTO sigorta_sirketleri (sirket_adi) VALUES ('$sirket_adi')";
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
-    public function updateSigortaSirketleri($id, $sirket_adi){
+    public function updateSigortaSirketleri($database,$id, $sirket_adi){
         try{
             $sql = "UPDATE sigorta_sirketleri SET sirket_adi = '$sirket_adi' WHERE id = $id";
-            $result = $this->database->query($sql);
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
     
-    public function deleteSigortaSirketleri($id){
+    public function deleteSigortaSirketleri($database,$id){
         try{
             $sql = "DELETE FROM sigorta_sirketleri WHERE id = $id";
-            $result = $this->database->query($sql);
+            $result = $database->query($sql);
             return $result;
         }
         catch(PDOException $e){
-            return "error";
+            return false;
         }
     }
 }
